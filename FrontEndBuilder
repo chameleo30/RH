@@ -44,7 +44,7 @@ pipeline {
                     ls -la backend
 
                     echo "Database:"
-                    ls -la base
+                    ls -la basemysql
                 '''
             }
         }
