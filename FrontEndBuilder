@@ -1,0 +1,79 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'NodeJS_20'
+        maven 'Maven_3'
+    }
+
+    environment {
+        CI = 'false'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Verify Tools') {
+            steps {
+                sh '''
+                    echo "===== TOOLS ====="
+                    git --version
+                    node -v
+                    npm -v
+                    java -version
+                    mvn -v
+                    mysql --version
+                '''
+            }
+        }
+
+        stage('Check Project Structure') {
+            steps {
+                sh '''
+                    echo "===== PROJECT STRUCTURE ====="
+                    ls -la
+
+                    echo "Frontend:"
+                    ls -la frontend
+
+                    echo "Backend:"
+                    ls -la backend
+
+                    echo "Database:"
+                    ls -la base
+                '''
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                dir('frontend') {
+                    sh '''
+                        npm install
+                        npm run build
+                    '''
+                }
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                dir('backend') {
+                    sh '''
+                        mvn clean package -DskipTests
+                    '''
+                }
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'backend/target/*.jar, frontend/dist/**, frontend/build/**, base/rh.sql', allowEmptyArchive: true
+            }
+        }
+    }
+}
