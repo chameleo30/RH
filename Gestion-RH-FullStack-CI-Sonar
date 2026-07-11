@@ -15,15 +15,8 @@ pipeline {
         )
     }
 
-    /*
-     * Les noms doivent correspondre exactement à :
-     * Manage Jenkins -> Tools
-     *
-     * Si votre installation NodeJS porte un autre nom,
-     * remplacez uniquement 'NodeJS' ci-dessous.
-     */
     tools {
-        nodejs 'NodeJS'
+        nodejs 'NodeJS_20'
         maven 'Maven_3'
     }
 
